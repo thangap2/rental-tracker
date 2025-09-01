@@ -116,7 +116,11 @@
                       </div>
                     </div>
                     <div class="card-body d-flex flex-column">
-                      <h5 class="card-title">{{ property.title }}</h5>
+                      <h5 class="card-title">
+                        <router-link :to="`/properties/${property.id}`" class="text-decoration-none property-title-link">
+                          {{ property.title }}
+                        </router-link>
+                      </h5>
                       <p class="card-text text-muted mb-2">
                         <i class="bi bi-geo-alt me-1"></i>
                         {{ formatAddress(property) }}
@@ -209,7 +213,11 @@
                             @error="handleImageError"
                           >
                           <div>
-                            <div class="fw-medium">{{ property.title }}</div>
+                            <div class="fw-medium">
+                              <router-link :to="`/properties/${property.id}`" class="text-decoration-none property-title-link">
+                                {{ property.title }}
+                              </router-link>
+                            </div>
                             <small class="text-muted">{{ formatDate(property.created_at) }}</small>
                           </div>
                         </div>
@@ -614,6 +622,16 @@ export default {
 
 .btn-group-sm .btn {
   padding: 0.25rem 0.5rem;
+}
+
+/* Clickable property titles */
+.property-title-link {
+  color: inherit;
+  transition: color 0.2s ease-in-out;
+}
+
+.property-title-link:hover {
+  color: #0d6efd !important;
 }
 
 </style>

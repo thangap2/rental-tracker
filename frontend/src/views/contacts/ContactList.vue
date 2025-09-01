@@ -99,7 +99,11 @@
                             {{ getInitials(contact.first_name, contact.last_name) }}
                           </div>
                           <div>
-                            <div class="fw-medium">{{ contact.first_name }} {{ contact.last_name }}</div>
+                            <div class="fw-medium">
+                              <router-link :to="`/contacts/${contact.id}`" class="text-decoration-none contact-name-link">
+                                {{ contact.first_name }} {{ contact.last_name }}
+                              </router-link>
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -410,5 +414,15 @@ export default {
 
 .btn-group-sm .btn {
   padding: 0.25rem 0.5rem;
+}
+
+/* Clickable contact names */
+.contact-name-link {
+  color: inherit;
+  transition: color 0.2s ease-in-out;
+}
+
+.contact-name-link:hover {
+  color: #0d6efd !important;
 }
 </style>

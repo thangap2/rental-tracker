@@ -35,6 +35,8 @@ const validateContact = [
     .withMessage('Email is required')
     .isEmail()
     .withMessage('Please enter a valid email address')
+    .isLength({ max: 255 })
+    .withMessage('Email cannot be more than 255 characters')
     .normalizeEmail(),
   
   body('phone')
@@ -105,6 +107,8 @@ const validateContactUpdate = [
     .withMessage('Email cannot be empty')
     .isEmail()
     .withMessage('Please enter a valid email address')
+    .isLength({ max: 255 })
+    .withMessage('Email cannot be more than 255 characters')
     .normalizeEmail(),
   
   body('phone')

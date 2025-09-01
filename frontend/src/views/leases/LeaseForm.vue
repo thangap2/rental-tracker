@@ -639,6 +639,7 @@
                     v-model="newTenant.email" 
                     class="form-control"
                     :class="{ 'is-invalid': newTenantErrors.email }"
+                    maxlength="255"
                     required
                     placeholder="john.smith@example.com"
                   >
@@ -740,6 +741,7 @@
                     v-model="newLandlord.email" 
                     class="form-control"
                     :class="{ 'is-invalid': newLandlordErrors.email }"
+                    maxlength="255"
                     required
                     placeholder="jane.doe@example.com"
                   >

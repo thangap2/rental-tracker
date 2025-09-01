@@ -178,7 +178,11 @@
               <tr v-for="lease in leases" :key="lease.id">
                 <td>
                   <div>
-                    <div class="fw-medium">{{ lease.property?.title || 'Unknown Property' }}</div>
+                    <div class="fw-medium">
+                      <router-link :to="`/leases/${lease.id}`" class="text-decoration-none lease-title-link">
+                        {{ lease.property?.title || 'Unknown Property' }}
+                      </router-link>
+                    </div>
                     <small class="text-muted">
                       {{ formatAddress(lease.property) }}
                     </small>
@@ -187,7 +191,14 @@
                 <td>
                   <div>
                     <div class="fw-medium">
-                      {{ lease.tenant ? `${lease.tenant.first_name} ${lease.tenant.last_name}` : 'No Tenant' }}
+                      <router-link 
+                        v-if="lease.tenant" 
+                        :to="`/contacts/${lease.tenant.id}`" 
+                        class="text-decoration-none contact-name-link"
+                      >
+                        {{ `${lease.tenant.first_name} ${lease.tenant.last_name}` }}
+                      </router-link>
+                      <span v-else>No Tenant</span>
                     </div>
                     <small class="text-muted">{{ lease.tenant?.email }}</small>
                   </div>
@@ -195,7 +206,14 @@
                 <td>
                   <div>
                     <div class="fw-medium">
-                      {{ lease.landlord ? `${lease.landlord.first_name} ${lease.landlord.last_name}` : 'No Landlord' }}
+                      <router-link 
+                        v-if="lease.landlord" 
+                        :to="`/contacts/${lease.landlord.id}`" 
+                        class="text-decoration-none contact-name-link"
+                      >
+                        {{ `${lease.landlord.first_name} ${lease.landlord.last_name}` }}
+                      </router-link>
+                      <span v-else>No Landlord</span>
                     </div>
                     <small class="text-muted">{{ lease.landlord?.email }}</small>
                   </div>
@@ -575,5 +593,17 @@ export default {
   .btn-group .btn i {
     font-size: 0.875rem;
   }
+}
+
+/* Clickable links */
+.lease-title-link,
+.contact-name-link {
+  color: inherit;
+  transition: color 0.2s ease-in-out;
+}
+
+.lease-title-link:hover,
+.contact-name-link:hover {
+  color: #0d6efd !important;
 }
 </style>

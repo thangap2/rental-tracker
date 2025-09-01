@@ -25,40 +25,48 @@
     <!-- Stats Cards -->
     <div class="row mb-4">
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stats-card">
-          <div class="stats-number">{{ stats.totalContacts || 0 }}</div>
-          <div class="stats-label">
-            <i class="bi bi-people me-1"></i>
-            Total Contacts
+        <router-link to="/contacts" class="text-decoration-none">
+          <div class="stats-card stats-card-clickable">
+            <div class="stats-number">{{ stats.totalContacts || 0 }}</div>
+            <div class="stats-label">
+              <i class="bi bi-people me-1"></i>
+              Total Contacts
+            </div>
           </div>
-        </div>
+        </router-link>
       </div>
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stats-card">
-          <div class="stats-number">{{ stats.totalProperties || 0 }}</div>
-          <div class="stats-label">
-            <i class="bi bi-building me-1"></i>
-            Properties
+        <router-link to="/properties" class="text-decoration-none">
+          <div class="stats-card stats-card-clickable">
+            <div class="stats-number">{{ stats.totalProperties || 0 }}</div>
+            <div class="stats-label">
+              <i class="bi bi-building me-1"></i>
+              Properties
+            </div>
           </div>
-        </div>
+        </router-link>
       </div>
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stats-card">
-          <div class="stats-number">{{ stats.activeLeases || 0 }}</div>
-          <div class="stats-label">
-            <i class="bi bi-file-text me-1"></i>
-            Active Leases
+        <router-link to="/leases" class="text-decoration-none">
+          <div class="stats-card stats-card-clickable">
+            <div class="stats-number">{{ stats.activeLeases || 0 }}</div>
+            <div class="stats-label">
+              <i class="bi bi-file-text me-1"></i>
+              Active Leases
+            </div>
           </div>
-        </div>
+        </router-link>
       </div>
       <div class="col-xl-3 col-md-6 mb-4">
-        <div class="stats-card stats-card-warning">
-          <div class="stats-number">{{ stats.expiringLeases || 0 }}</div>
-          <div class="stats-label">
-            <i class="bi bi-calendar-x me-1"></i>
-            Expiring Soon
+        <router-link to="/leases" class="text-decoration-none">
+          <div class="stats-card stats-card-warning stats-card-clickable">
+            <div class="stats-number">{{ stats.expiringLeases || 0 }}</div>
+            <div class="stats-label">
+              <i class="bi bi-calendar-x me-1"></i>
+              Expiring Soon
+            </div>
           </div>
-        </div>
+        </router-link>
       </div>
     </div>
 
@@ -98,158 +106,40 @@
             Leases Expiring Soon
           </div>
           <div class="card-body">
-            <!-- Navigation tabs for different time periods -->
-            <ul class="nav nav-tabs mb-3" id="expiringTabs" role="tablist">
-              <li class="nav-item" role="presentation">
-                <button 
-                  class="nav-link active" 
-                  id="expiring-30-tab" 
-                  data-bs-toggle="tab" 
-                  data-bs-target="#expiring-30" 
-                  type="button" 
-                  role="tab"
-                >
-                  30 Days
-                  <span class="badge bg-warning text-dark ms-1">{{ expiringLeases.in30Days?.length || 0 }}</span>
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button 
-                  class="nav-link" 
-                  id="expiring-60-tab" 
-                  data-bs-toggle="tab" 
-                  data-bs-target="#expiring-60" 
-                  type="button" 
-                  role="tab"
-                >
-                  60 Days
-                  <span class="badge bg-info text-dark ms-1">{{ expiringLeases.in60Days?.length || 0 }}</span>
-                </button>
-              </li>
-              <li class="nav-item" role="presentation">
-                <button 
-                  class="nav-link" 
-                  id="expiring-100-tab" 
-                  data-bs-toggle="tab" 
-                  data-bs-target="#expiring-100" 
-                  type="button" 
-                  role="tab"
-                >
-                  100 Days
-                  <span class="badge bg-secondary ms-1">{{ expiringLeases.in100Days?.length || 0 }}</span>
-                </button>
-              </li>
-            </ul>
-
-            <!-- Tab content -->
-            <div class="tab-content" id="expiringTabsContent">
-              <!-- 30 Days Tab -->
-              <div class="tab-pane fade show active" id="expiring-30" role="tabpanel">
-                <div v-if="!expiringLeases.in30Days || expiringLeases.in30Days.length === 0" class="text-center py-4">
-                  <i class="bi bi-check-circle text-success display-4"></i>
-                  <h5 class="mt-3">All Good!</h5>
-                  <p class="text-muted">No leases expiring in the next 30 days.</p>
-                </div>
-                <div v-else>
-                  <div
-                    v-for="lease in expiringLeases.in30Days"
-                    :key="lease.id"
-                    class="d-flex justify-content-between align-items-center border-bottom py-3"
-                  >
-                    <div>
-                      <h6 class="mb-1">{{ lease.property?.title }}</h6>
-                      <p class="mb-0 text-muted">
-                        <span v-if="lease.tenants && lease.tenants.length > 0">
-                          {{ lease.tenants.map(t => `${t.first_name} ${t.last_name}`).join(', ') }}
-                        </span>
-                        <span v-else-if="lease.tenant">
-                          {{ lease.tenant.first_name }} {{ lease.tenant.last_name }}
-                        </span>
-                      </p>
+            <div v-if="allExpiringLeases.length === 0" class="text-center py-4">
+              <i class="bi bi-check-circle text-success display-4"></i>
+              <h5 class="mt-3">All Good!</h5>
+              <p class="text-muted">No leases expiring in the next 100 days.</p>
+            </div>
+            <div v-else>
+              <router-link
+                v-for="lease in allExpiringLeases"
+                :key="lease.id"
+                :to="`/leases/${lease.id}`"
+                class="text-decoration-none text-dark"
+              >
+                <div class="d-flex justify-content-between align-items-center border-bottom py-3 lease-item">
+                  <div>
+                    <h6 class="mb-1">{{ lease.property?.title }}</h6>
+                    <p class="mb-0 text-muted">
+                      <span v-if="lease.tenants && lease.tenants.length > 0">
+                        {{ lease.tenants.map(t => `${t.first_name} ${t.last_name}`).join(', ') }}
+                      </span>
+                      <span v-else-if="lease.tenant">
+                        {{ lease.tenant.first_name }} {{ lease.tenant.last_name }}
+                      </span>
+                    </p>
+                  </div>
+                  <div class="text-end">
+                    <div class="badge mb-1" :class="getExpirationBadgeClass(lease.end_date)">
+                      {{ formatDate(lease.end_date) }}
                     </div>
-                    <div class="text-end">
-                      <div class="badge bg-danger text-white mb-1">
-                        {{ formatDate(lease.end_date) }}
-                      </div>
-                      <div class="text-muted small">
-                        {{ getDaysUntilExpiration(lease.end_date) }} days left
-                      </div>
+                    <div class="text-muted small">
+                      {{ getDaysUntilExpiration(lease.end_date) }} days left
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <!-- 60 Days Tab -->
-              <div class="tab-pane fade" id="expiring-60" role="tabpanel">
-                <div v-if="!expiringLeases.in60Days || expiringLeases.in60Days.length === 0" class="text-center py-4">
-                  <i class="bi bi-check-circle text-success display-4"></i>
-                  <h5 class="mt-3">All Good!</h5>
-                  <p class="text-muted">No leases expiring in the next 60 days.</p>
-                </div>
-                <div v-else>
-                  <div
-                    v-for="lease in expiringLeases.in60Days"
-                    :key="lease.id"
-                    class="d-flex justify-content-between align-items-center border-bottom py-3"
-                  >
-                    <div>
-                      <h6 class="mb-1">{{ lease.property?.title }}</h6>
-                      <p class="mb-0 text-muted">
-                        <span v-if="lease.tenants && lease.tenants.length > 0">
-                          {{ lease.tenants.map(t => `${t.first_name} ${t.last_name}`).join(', ') }}
-                        </span>
-                        <span v-else-if="lease.tenant">
-                          {{ lease.tenant.first_name }} {{ lease.tenant.last_name }}
-                        </span>
-                      </p>
-                    </div>
-                    <div class="text-end">
-                      <div class="badge bg-warning text-dark mb-1">
-                        {{ formatDate(lease.end_date) }}
-                      </div>
-                      <div class="text-muted small">
-                        {{ getDaysUntilExpiration(lease.end_date) }} days left
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 100 Days Tab -->
-              <div class="tab-pane fade" id="expiring-100" role="tabpanel">
-                <div v-if="!expiringLeases.in100Days || expiringLeases.in100Days.length === 0" class="text-center py-4">
-                  <i class="bi bi-check-circle text-success display-4"></i>
-                  <h5 class="mt-3">All Good!</h5>
-                  <p class="text-muted">No leases expiring in the next 100 days.</p>
-                </div>
-                <div v-else>
-                  <div
-                    v-for="lease in expiringLeases.in100Days"
-                    :key="lease.id"
-                    class="d-flex justify-content-between align-items-center border-bottom py-3"
-                  >
-                    <div>
-                      <h6 class="mb-1">{{ lease.property?.title }}</h6>
-                      <p class="mb-0 text-muted">
-                        <span v-if="lease.tenants && lease.tenants.length > 0">
-                          {{ lease.tenants.map(t => `${t.first_name} ${t.last_name}`).join(', ') }}
-                        </span>
-                        <span v-else-if="lease.tenant">
-                          {{ lease.tenant.first_name }} {{ lease.tenant.last_name }}
-                        </span>
-                      </p>
-                    </div>
-                    <div class="text-end">
-                      <div class="badge bg-info text-dark mb-1">
-                        {{ formatDate(lease.end_date) }}
-                      </div>
-                      <div class="text-muted small">
-                        {{ getDaysUntilExpiration(lease.end_date) }} days left
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </router-link>
             </div>
           </div>
         </div>
@@ -272,31 +162,34 @@
               </router-link>
             </div>
             <div v-else>
-              <div
+              <router-link
                 v-for="lease in recentLeases"
                 :key="lease.id"
-                class="d-flex justify-content-between align-items-center border-bottom py-2"
+                :to="`/leases/${lease.id}`"
+                class="text-decoration-none text-dark"
               >
-                <div>
-                  <div class="fw-medium small">{{ lease.property?.title }}</div>
-                  <div class="text-muted small">
-                    {{ lease.tenant?.first_name }} {{ lease.tenant?.last_name }}
+                <div class="d-flex justify-content-between align-items-center border-bottom py-2 lease-item">
+                  <div>
+                    <div class="fw-medium small">{{ lease.property?.title }}</div>
+                    <div class="text-muted small">
+                      {{ lease.tenant?.first_name }} {{ lease.tenant?.last_name }}
+                    </div>
+                  </div>
+                  <div class="text-end">
+                    <div
+                      class="badge"
+                      :class="{
+                        'bg-success': lease.status === 'active',
+                        'bg-warning text-dark': lease.status === 'pending',
+                        'bg-danger': lease.status === 'expired',
+                        'bg-info': lease.status === 'terminated'
+                      }"
+                    >
+                      {{ lease.status }}
+                    </div>
                   </div>
                 </div>
-                <div class="text-end">
-                  <div
-                    class="badge"
-                    :class="{
-                      'bg-success': lease.status === 'active',
-                      'bg-warning text-dark': lease.status === 'pending',
-                      'bg-danger': lease.status === 'expired',
-                      'bg-info': lease.status === 'terminated'
-                    }"
-                  >
-                    {{ lease.status }}
-                  </div>
-                </div>
-              </div>
+              </router-link>
             </div>
           </div>
         </div>
@@ -368,6 +261,19 @@ export default {
 
     const user = computed(() => authStore.user)
 
+    const allExpiringLeases = computed(() => {
+      const all = [
+        ...(expiringLeases.value.in30Days || []),
+        ...(expiringLeases.value.in60Days || []),
+        ...(expiringLeases.value.in100Days || [])
+      ]
+      // Remove duplicates and sort by end date
+      const unique = all.filter((lease, index, arr) => 
+        arr.findIndex(l => l.id === lease.id) === index
+      )
+      return unique.sort((a, b) => new Date(a.end_date) - new Date(b.end_date))
+    })
+
     const formatCurrency = (amount) => {
       return new Intl.NumberFormat('en-US').format(amount)
     }
@@ -384,6 +290,17 @@ export default {
       const dateObj = new Date(endDate)
       if (isNaN(dateObj.getTime())) return 0
       return Math.max(0, differenceInDays(dateObj, new Date()))
+    }
+
+    const getExpirationBadgeClass = (endDate) => {
+      const days = getDaysUntilExpiration(endDate)
+      if (days <= 30) {
+        return 'bg-danger text-white'
+      } else if (days <= 60) {
+        return 'bg-warning text-dark'
+      } else {
+        return 'bg-info text-dark'
+      }
     }
 
     const fetchDashboardData = async () => {
@@ -412,10 +329,12 @@ export default {
       user,
       stats,
       expiringLeases,
+      allExpiringLeases,
       recentLeases,
       formatCurrency,
       formatDate,
       getDaysUntilExpiration,
+      getExpirationBadgeClass,
     }
   },
 }
@@ -473,5 +392,42 @@ export default {
   text-transform: uppercase;
   font-size: 0.875rem;
   letter-spacing: 0.05em;
+}
+
+/* Clickable stats cards */
+.stats-card-clickable {
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.stats-card-clickable:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.stats-card-clickable:hover .stats-number {
+  color: #0d6efd;
+}
+
+.stats-card-clickable:hover .stats-label {
+  color: #495057;
+}
+
+/* Clickable lease items */
+.lease-item {
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  border-radius: 0.375rem;
+  margin: -0.25rem;
+  padding: 0.75rem !important;
+}
+
+.lease-item:hover {
+  background-color: #f8f9fa;
+}
+
+.lease-item:hover h6,
+.lease-item:hover .fw-medium {
+  color: #0d6efd !important;
 }
 </style>

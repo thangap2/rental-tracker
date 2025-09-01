@@ -15,6 +15,7 @@
             class="form-control"
             id="email"
             v-model="form.email"
+            maxlength="255"
             required
             :disabled="loading"
           />

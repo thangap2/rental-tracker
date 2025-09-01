@@ -68,6 +68,7 @@
                         type="email"
                         class="form-control"
                         :class="{ 'is-invalid': errors.email }"
+                        maxlength="255"
                         required
                       >
                       <div v-if="errors.email" class="invalid-feedback">
